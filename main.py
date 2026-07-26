@@ -1,7 +1,8 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+import os
 
-app = FastAPI(title="Cotizador de Obras Eléctricas")
+app = FastAPI(title="Cotizador")
 
 app.add_middleware(
     CORSMiddleware,
@@ -14,3 +15,15 @@ app.add_middleware(
 @app.get("/api/health")
 def health():
     return {"status": "ok"}
+
+@app.post("/api/auth/login")
+def login_dummy(email: str, password: str):
+    return {"access_token": "token-dummy-123", "token_type": "bearer"}
+
+@app.get("/api/auth/me")
+def me():
+    return {"id": 1, "email": "test@example.com", "nombre_empresa": "APEXCORE"}
+
+@app.get("/api/proyectos/")
+def list_proyectos():
+    return []
