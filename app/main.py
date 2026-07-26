@@ -1,14 +1,8 @@
-import os
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-app = FastAPI(
-    title="Cotizador de Obras Eléctricas",
-    description="Sistema de presupuestos para instalaciones eléctricas",
-    version="0.1.0"
-)
+app = FastAPI(title="Cotizador")
 
-# CORS
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -18,10 +12,9 @@ app.add_middleware(
 )
 
 @app.get("/api/health")
-def health_check():
-    return {"status": "ok", "message": "Backend is running"}
+def health():
+    return {"status": "ok"}
 
-if __name__ == "__main__":
-    import uvicorn
-    port = int(os.getenv("PORT", 8000))
-    uvicorn.run(app, host="0.0.0.0", port=port)
+@app.get("/")
+def root():
+    return {"message": "Backend is running"}
