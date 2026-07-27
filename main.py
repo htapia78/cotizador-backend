@@ -1,12 +1,10 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from datetime import datetime
-import os
+import json
 
 app = FastAPI(title="Cotizador")
 
-# Datos en memoria (temporal, solo para testing)
-usuarios = {}
 proyectos = {}
 contador_proyectos = 0
 
@@ -18,29 +16,30 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# AUTH
 @app.post("/api/auth/login")
-def login_dummy(email: str, password: str):
-    return {"access_token": "token-dummy-123", "token_type": "bearer"}
+async def login(request: Request):
+    data = await request.json()
+    return {"access_token": "token-123", "token_type": "bearer"}
 
 @app.get("/api/auth/me")
 def me():
     return {"id": 1, "email": "test@example.com", "nombre_empresa": "APEXCORE"}
 
-# PROYECTOS
 @app.get("/api/proyectos/")
 def list_proyectos():
     return list(proyectos.values())
 
 @app.post("/api/proyectos/")
-def crear_proyecto(nombre: str, cliente: str, descripcion: str = ""):
+async def crear_proyecto(request: Request):
     global contador_proyectos
+    data = await request.json()
     contador_proyectos += 1
+    
     proyecto = {
         "id": contador_proyectos,
-        "nombre": nombre,
-        "cliente": cliente,
-        "descripcion": descripcion,
+        "nombre": data.get("nombre"),
+        "cliente": data.get("cliente"),
+        "descripcion": data.get("descripcion", ""),
         "estado": "en_progreso",
         "fecha_creacion": datetime.now().isoformat()
     }
